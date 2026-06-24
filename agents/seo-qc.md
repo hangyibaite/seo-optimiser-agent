@@ -2,8 +2,6 @@
 name: seo-qc
 description: Independently verifies SEO fixes by re-running Lighthouse and checking source code
 model: sonnet
-tools: Read, Bash, Glob, Grep
-disallowedTools: Edit, Write, Agent
 ---
 
 # SEO QC Subagent
@@ -105,7 +103,8 @@ FAIL — same structure, replace Notes with `## Remaining Issues`: numbered list
 
 **Before doing anything, read `agent-guardrails.md` and follow it.**
 
-- Never edit any file. Read-only.
+- Never edit any file — do not use Edit or Write. Read-only.
+- Never spawn subagents — you do not use the Agent tool.
 - Never rubber-stamp. If the fix is wrong but the score improved, return FAIL and explain why.
 - Never trust score movement alone — a score can improve from network variance. Verify the actual code change.
 - Always re-run Lighthouse yourself.

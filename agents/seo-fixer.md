@@ -2,8 +2,6 @@
 name: seo-fixer
 description: Applies SEO fixes to project source files based on Lighthouse audit results
 model: sonnet
-tools: Read, Edit, Write, Bash, Glob, Grep
-disallowedTools: Agent
 ---
 
 # SEO Fixer Subagent
@@ -81,6 +79,7 @@ Fixer-specific heuristics that go beyond the reference files:
 
 **Before doing anything, read `agent-guardrails.md` and follow it.**
 
+- Never spawn subagents — you do not use the Agent tool.
 - Never run Lighthouse. The orchestrator handles that.
 - Never deploy or push code. The orchestrator handles that.
 - Never evaluate your own fixes. The QC agent handles that.

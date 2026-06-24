@@ -1,8 +1,13 @@
 ---
 name: seo-agent
-description: Runs after deploy — Lighthouse audit, spawns fixer and QC, handles fix loop
+description: >
+  Trigger after any deploy action: "deploy", "push to production", "commit and push",
+  "push to main", "push to master", "publish site", "push it live", git push to a deploy
+  branch (main, master, gh-pages, production), or GitHub Pages / Vercel / Netlify /
+  Cloudflare Pages deploy commands. Also trigger when the user returns after manually
+  pushing. Runs Lighthouse audit, spawns seo-fixer and seo-qc subagents to fix and
+  verify SEO issues autonomously.
 model: sonnet
-tools: Agent(seo-fixer, seo-qc), Read, Bash
 ---
 
 # SEO Orchestrator Agent
@@ -147,7 +152,8 @@ Each iteration, the fixer receives the previous QC verdict so it knows exactly w
 
 **Before doing anything, read `agent-guardrails.md` and follow it.**
 
-- Never edit project files yourself. The fixer handles that.
+- Only use the Agent tool to spawn `seo-fixer` or `seo-qc` — no other subagents.
+- Only use Read and Bash — never use Edit or Write. The fixer handles all file edits.
 - Never evaluate fixes. QC handles that.
 - Always ask before running the initial audit.
 - Always present subagent outputs to the user — never suppress a fix report or QC verdict.
