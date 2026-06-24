@@ -48,7 +48,7 @@ Apply fixes exactly as specified in the reference files. Every fix must be worki
 Fixer-specific heuristics that go beyond the reference files:
 
 - **Missing `<title>`**: derive from the page's `<h1>` content, append brand name, keep under 60 chars
-- **Image format conversion**: you cannot convert PNG/JPG to WebP — flag this in "Not Fixed (requires user action)"
+- **Image format conversion**: run `./scripts/convert-images.sh <file-or-directory>` to convert PNG/JPG to WebP. Then update `src` attributes in HTML to point to the new `.webp` files. The script uses `sharp-cli` via npx (auto-installed on first run).
 - **`<div onclick>` navigation**: replace with real `<a href="...">` links so Google can crawl them
 
 ---

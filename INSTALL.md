@@ -37,7 +37,7 @@ This installs three agents:
 cp "$SEO_AGENT_DIR"/agent-guardrails.md ./agent-guardrails.md
 cp -r "$SEO_AGENT_DIR"/references ./references
 cp -r "$SEO_AGENT_DIR"/scripts ./scripts
-chmod +x scripts/lighthouse-audit.sh
+chmod +x scripts/lighthouse-audit.sh scripts/convert-images.sh
 ```
 
 ### 3. Configure your deployed URL
@@ -112,6 +112,7 @@ your-project/
   scripts/
     lighthouse-audit.sh
     extract-summary.js
+    convert-images.sh   ← PNG/JPG → WebP conversion (uses sharp-cli via npx, auto-installed)
   lighthouse-reports/   ← created on first run, gitignored
   .lighthouse-url       ← your deployed URL
 ```

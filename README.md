@@ -15,7 +15,7 @@ No manual triage. No copy-pasting Lighthouse reports. No guessing what to fix.
 
 ## What it covers
 
-- **Performance** — LCP, INP, CLS, render-blocking resources, image optimisation, font loading
+- **Performance** — LCP, INP, CLS, render-blocking resources, image optimisation (auto-converts PNG/JPG to WebP), font loading
 - **On-page SEO** — title tags, meta descriptions, heading hierarchy, canonical URLs, Open Graph
 - **Technical SEO** — robots.txt, sitemaps, crawlability, HTTPS, redirects
 - **Accessibility** — alt text, heading order, landmark elements, colour contrast
@@ -100,7 +100,7 @@ Safety guardrails (`agent-guardrails.md`) are read by every agent before acting.
 
 ## Requirements
 
-- Node.js 18+
+- Node.js 18+ (also used for image conversion via `sharp-cli`, auto-installed on first use)
 - Chrome or Chromium
 - Claude Code
 
