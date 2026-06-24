@@ -51,8 +51,9 @@ function extractReport(filePath, label) {
   } else {
     out += '| Audit | Score | Value | Savings |\n|---|---|---|---|\n';
     for (const f of failed.slice(0, 30)) {
+      const unitMap = { millisecond: 'ms', ms: 'ms', byte: 'B' };
       const val = f.value !== undefined
-        ? Math.round(f.value) + (f.unit === 'millisecond' ? 'ms' : f.unit === 'byte' ? 'B' : '')
+        ? Math.round(f.value) + (unitMap[f.unit] || '')
         : '-';
       const sav = [];
       if (f.savingsMs) sav.push(f.savingsMs + 'ms');

@@ -1,6 +1,6 @@
-# PageSpeed Audit Mode
+# PageSpeed Audit Reference
 
-Triggered when the user pastes a PageSpeed Insights (PSI) or Lighthouse report. This is the primary feedback loop in the build-deploy-audit cycle: generate → deploy → audit → fix → repeat.
+Triage table for Lighthouse and PageSpeed Insights reports. The fixer subagent reads this to map failed audits to root causes and fix references.
 
 ---
 
@@ -127,36 +127,3 @@ Fix:
 
 Verify: Re-run PSI after deploying. Check Network tab in DevTools — hero image should appear in the first 2-3 requests with priority "High".
 
----
-
-## Step 5: Re-run Instruction
-
-After fixes are applied and deployed, tell the user:
-
-> "Re-run PageSpeed Insights on the live URL — not localhost. PSI measures real network conditions and CDN behaviour. A localhost score is not representative."
-
-Provide the direct link format: `https://pagespeed.web.dev/report?url=YOUR_URL`
-
----
-
-## Scoring Context
-
-Use this to set realistic expectations when the user asks "what score should I aim for":
-
-| Score | Interpretation |
-|---|---|
-| 90–100 | Green. Ship it. |
-| 75–89 | Acceptable for most projects. Fix HIGH items only. |
-| 50–74 | Noticeable performance issues. Fix all HIGH + MEDIUM. |
-| < 50 | Significant problems. Full audit required. |
-
-Mobile scores are always lower than desktop — Google weights mobile. A 75 mobile / 95 desktop split is normal. Optimise for mobile first.
-
----
-
-## What this mode never does
-
-- Suggest re-running on localhost — always the deployed URL
-- Output fixes in PSI's category order — always resequence by impact
-- Treat a score drop as a crisis before checking if the content changed (new images, new JS, new fonts all affect score legitimately)
-- Recommend third-party performance tools (GTmetrix, WebPageTest) unless PSI is insufficient for the specific diagnosis

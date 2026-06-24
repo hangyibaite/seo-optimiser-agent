@@ -94,6 +94,11 @@ $LH_CMD "$URL" \
 MOBILE_JSON="${MOBILE_BASE}.report.json"
 MOBILE_HTML="${MOBILE_BASE}.report.html"
 
+if [ ! -f "$MOBILE_JSON" ]; then
+  echo "ERROR: Mobile audit did not produce JSON at: $MOBILE_JSON"
+  exit 1
+fi
+
 # ── Generate slim summary ────────────────────────────────────────────────────
 SUMMARY_PATH="$REPORT_DIR/${TIMESTAMP}-${CLEAN_URL}.summary.md"
 
