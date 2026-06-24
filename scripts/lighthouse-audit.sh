@@ -97,65 +97,15 @@ MOBILE_HTML="${MOBILE_BASE}.report.html"
 # ── Generate slim summary ────────────────────────────────────────────────────
 SUMMARY_PATH="$REPORT_DIR/${TIMESTAMP}-${CLEAN_URL}.summary.md"
 
-node -e "
-const fs = require('fs');
+node "$SCRIPT_DIR/extract-summary.js" \
+  "$DESKTOP_JSON" "$MOBILE_JSON" "$SUMMARY_PATH" "$URL" "$TIMESTAMP"
 
-function extractReport(path, label) {
-  const r = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const scores = {};
-  for (const [k, v] of Object.entries(r.categories)) {
-    scores[k] = Math.round(v.score * 100);
-  }
-
-  const failed = [];
-  for (const [id, audit] of Object.entries(r.audits)) {
-    if (audit.score !== null && audit.score < 1 && audit.details) {
-      const item = { id, title: audit.title, score: audit.score };
-      if (audit.numericValue !== undefined) {
-        item.value = audit.numericValue;
-        item.unit = audit.numericUnit || 'ms';
-      }
-      if (audit.details && audit.details.overallSavingsMs) {
-        item.savingsMs = Math.round(audit.details.overallSavingsMs);
-      }
-      if (audit.details && audit.details.overallSavingsBytes) {
-        item.savingsKB = Math.round(audit.details.overallSavingsBytes / 1024);
-      }
-      failed.push(item);
-    }
-  }
-
-  failed.sort((a, b) => (a.score || 0) - (b.score || 0));
-
-  let out = '## ' + label + '\n\n';
-  out += '| Category | Score |\n|---|---|\n';
-  for (const [k, v] of Object.entries(scores)) {
-    out += '| ' + k + ' | ' + v + ' |\n';
-  }
-  out += '\n### Failed Audits\n\n';
-  if (failed.length === 0) {
-    out += 'All audits passed.\n';
-  } else {
-    out += '| Audit | Score | Value | Savings |\n|---|---|---|---|\n';
-    for (const f of failed.slice(0, 30)) {
-      const val = f.value !== undefined ? Math.round(f.value) + (f.unit === 'millisecond' ? 'ms' : f.unit === 'byte' ? 'B' : '') : '-';
-      const sav = [];
-      if (f.savingsMs) sav.push(f.savingsMs + 'ms');
-      if (f.savingsKB) sav.push(f.savingsKB + 'KB');
-      out += '| ' + f.title + ' | ' + Math.round((f.score || 0) * 100) + ' | ' + val + ' | ' + (sav.join(', ') || '-') + ' |\n';
-    }
-  }
-  return out;
-}
-
-let summary = '# Lighthouse Audit Summary\n\n';
-summary += '- **URL:** $URL\n';
-summary += '- **Timestamp:** $TIMESTAMP\n\n';
-summary += extractReport('$DESKTOP_JSON', 'Desktop') + '\n';
-summary += extractReport('$MOBILE_JSON', 'Mobile') + '\n';
-
-fs.writeFileSync('$SUMMARY_PATH', summary);
-" 2>/dev/null
+if [ ! -f "$SUMMARY_PATH" ]; then
+  echo "ERROR: Summary generation failed. Full JSON reports are still available."
+  echo "  Desktop: $DESKTOP_JSON"
+  echo "  Mobile:  $MOBILE_JSON"
+  exit 1
+fi
 
 # ── Create latest symlinks ───────────────────────────────────────────────────
 ln -sf "$(basename "$SUMMARY_PATH")" "$REPORT_DIR/latest.summary.md"
@@ -171,12 +121,6 @@ echo "  URL: $URL"
 echo "  Timestamp: $TIMESTAMP"
 echo ""
 
-# Quick scores from summary
-PERF_D=$(node -e "const r=require('$DESKTOP_JSON'); console.log(Math.round(r.categories.performance.score*100))" 2>/dev/null || echo "n/a")
-PERF_M=$(node -e "const r=require('$MOBILE_JSON'); console.log(Math.round(r.categories.performance.score*100))" 2>/dev/null || echo "n/a")
-echo "  Desktop Performance: $PERF_D"
-echo "  Mobile Performance:  $PERF_M"
-echo ""
 echo "  Reports:"
 echo "  Summary:  $SUMMARY_PATH"
 echo "  Desktop:  $DESKTOP_HTML"
